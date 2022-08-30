@@ -61,5 +61,62 @@ from emp
 where sal > any(select sal from emp where job = 'MANAGER') AND deptno <> 20;
 
 
-select rownum, ename, sal
-from emp;
+-- EMP 테이블에서 최상위 소득자 3명의 이름과 급여를 표시 하시오
+select rownum as rank, ename, sal
+from (select ename, sal from emp order by sal desc)
+where rownum <= 3;
+
+-- 'SALES' 부서의 모든 사원의 이름과 급여를 출력하되 월급이 높은 사람이 먼저 나오고 거기에 순번을 붙이시오.
+
+select rownum as rank, ename, sal
+from (select * from emp order by sal desc)
+where deptno = (select deptno from dept where dname = 'SALES');
+
+
+-- 테이블명 EMP_08
+-- 컬럼  EMPNO number(4)
+--      ENAME varchar2(20)
+--      JOB varchar2(16)
+--      DEPTNO number(2)
+       
+-- 테이블 생성
+create table EMP_08(
+    EMPNO number(4),
+    ENAME varchar2(20),
+    JOB varchar2(16),
+    DEPTNO number(2));
+
+-- 테이블 속성 보기
+desc emp_08;
+
+-- 테이블 컬럼 추가하기
+alter table emp_08
+ADD (sal number(5));
+
+-- 테이블 컬럼 수정하기
+alter table emp_08
+MODIFY (sal NUMBER(8, 3));
+
+-- 테이블 컬럼 삭제하기
+alter table emp_08
+DROP column sal;
+
+-- 데이터가 들어가 있는 테이블의 컬럼을 삭제해보자 !
+select * from emp_01;
+desc emp_01;
+
+-- 데이터가 들어가 있는 테이블의 컬럼을 변경 => 확대(number(8, 3)은 가능하나 축소(number(2))은 불가능하다.
+alter table emp_01
+MODIFY (sal number(8, 3));
+
+alter table emp_01
+MODIFY (ename varchar2(5));
+
+-- 데이터가 들어가 있는 테이블의 컬럼을 삭제 => 삭제(DROP)는 데이터가 들어가 있어서 삭제(DROP)가 가능하다
+alter table emp_01
+DROP COLUMN sal;
+
+-- 데이터가 들어가 있는 테이블의 컬럼을 추가 => 컬럼은 ADD되지만 컬럼 속의 데이터는 null 값으로 유지된다.
+alter table emp_01
+ADD (MGR2 number(4));
+select * from emp_01;
