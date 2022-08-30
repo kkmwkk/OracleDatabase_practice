@@ -120,3 +120,41 @@ DROP COLUMN sal;
 alter table emp_01
 ADD (MGR2 number(4));
 select * from emp_01;
+
+-- DROP TABLE 실습
+
+-- DROP 했더니 DROP한 TABLE에 BIN$5277sjb3(Recycling table)이 생성된다.
+select * from tab;
+Drop table test1;
+
+-- Recycling bin을 생성안하고 삭제하는 방법
+Drop table EMP_04 PURGE;
+select * from tab;
+
+-- Recycling bin을 table로 되돌리는 방법(Table명을 알아야 되돌릴 수 있다.)
+flashback table test1 to before drop;
+select * from tab;
+
+-- 남아있는 RecyclingBin을 없애는 이유
+PURGE RECYCLEBIN;
+
+-- dept 테이블을 복사한 dept_05 테이블을 만들고
+create table dept_05
+AS
+select * from dept;
+
+-- 1. tel varchar2(30) 컬럼
+alter table dept_05 
+ADD(tel varchar2(30));
+-- 2. dname 컬럼의 크기를 varchar2 크기 35로 바꾸시오
+alter table dept_05
+MODIFY(dname varchar2(35));
+
+-- 3. loc 컬럼의 이름을 '근무지'로 바꾸시오
+alter table dept_05
+RENAME COLUMN loc to 근무지;
+
+-- 수정된 테이블 확인
+select * from dept_05;
+
+
