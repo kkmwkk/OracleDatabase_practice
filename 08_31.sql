@@ -56,6 +56,102 @@ INSERT INTO emp_13(deptno, ename) VALUES('10', 'CLARK');
 INSERT INTO emp_13(deptno, ename) VALUES('10', 'KING');
 INSERT INTO emp_13(deptno, ename) VALUES('10', 'MILLER');
 
+-- 다중 테이블에 다중행 입력
+create table emp_hir
+AS
+SELECT empno, ename, hiredate
+FROM emp
+WHERE 1 = 0;
+
+create table emp_mgr
+AS
+SELECT empno, ename, mgr
+FROM emp
+WHERE 1 = 0;
+
+-- 다중 테이블에 다중행을 삽입(INSERT)
+INSERT ALL
+INTO emp_hir VALUES(empno, ename, hiredate)
+INTO emp_mgr VALUES(empno, ename, mgr)
+SELECT empno, ename, hiredate,mgr
+FROM emp
+WHERE deptno = 20;
+
+select * from emp_mgr;
+
+-- 암묵적 NULL 값의 삽입
+INSERT into emp_mgr(empno, mgr)
+values(29, 6745);
+
+-- ENAME (NULL)
+select * from emp_mgr;
+
+-- 명시적 NULL 값의 삽입
+INSERT INTO emp_mgr(empno, ename, mgr)
+VALUES(4444, NULL, 7544);
+
+-- ENAME (NULL) 
+select * from emp_mgr;
+
+-- UPDATE 실습
+UPDATE emp_hir
+SET empno = 9999
+WHERE ename = 'SMITH';
+
+-- UPDATE 에서 WHERE을 쓰지 않으면 SET의 컬럼의 데이터값이 모두 바뀐다.
+UPDATE emp_hir
+SET empno = 4989;
+
+-- 문제 emp_hir 테이블의 'scott'의 empno = 5555로 변경
+UPDATE emp_hir
+SET empno = 5555
+WHERE ename = 'SCOTT';
+
+-- emp_02 테이블의 사원들중 이름에 'T'가 들어 있는 사원들의 월급을 1300으로 바꾸세요.
+UPDATE emp_02
+SET sal = 1300
+WHERE ename like'%T%';
+
+-- emp_02 테이블의 'MANAGER'의 입사일을 어제 날짜로 바꾸시오.
+UPDATE emp_02
+SET hiredate = sysdate - 1
+WHERE job = 'MANAGER';
+
+-- emp_02 테이블의 사원중에 급여가 3000 이상인 사원들의 급여를 50% 인상하고 입사일을 '22/01/01'로 바꾸시오.
+UPDATE emp_02
+SET hiredate = '22/01/01' , sal = sal * 1.5
+WHERE sal >= 3000;
+
+-- '01' 월에 입사한 사원의 월급을 10000원 인상하시요.
+UPDATE emp_02
+SET sal = sal + 10000
+WHERE substr(hiredate, 4, 2) = '01';
+
+-- 'DALLAS'에 근무하는 사원들의 월급을 5000원 인상하시오
+UPDATE emp_02
+SET sal = sal + 5000
+WHERE deptno = (select deptno from dept where loc = 'DALLAS');
+
+-- 다중 테이블에 다중행을 삽입(INSERT)
+INSERT ALL
+INTO emp_hir VALUES(empno, ename, hiredate)
+INTO emp_mgr VALUES(empno, ename, mgr)
+SELECT empno, ename, hiredate,mgr
+FROM emp
+WHERE deptno = 20;
+
+-- emp_02 테이블의 모든 사원의 급여와 입사일을 'KING' 사원의 입사일로 바꾸시오
+UPDATE emp_02
+SET (sal,hiredate) = (select sal,hiredate from emp_02 where ename = 'KING');
+
+-- emp_02 테이블 완전 삭제
+drop table emp_02 purge;
+
+-- emp_02 테이블 재생성
+create table emp_02
+AS
+SELECT *
+FROM emp;
 
 
 
@@ -64,10 +160,4 @@ INSERT INTO emp_13(deptno, ename) VALUES('10', 'MILLER');
 
 
 
-
-
-
-
-
-
-
+select * from emp_02;
