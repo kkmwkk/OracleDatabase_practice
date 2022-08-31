@@ -155,9 +155,4 @@ FROM emp;
 
 
 
-
-
-
-
-
 select * from emp_02;
